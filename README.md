@@ -64,5 +64,5 @@
 
 hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://www.hackster.io/pulasthi-nanayakkara/send-multiple-sensors-data-to-firebase-using-esp8266-f2f38b)를 참고하였습니다.
 
-![파이어베이스](https://user-images.githubusercontent.com/88194064/131805681-67a60855-7dde-4f15-b286-280d71c00866.png) 센서 값 저장 모습
+<img src="사진\파이어베이스" align="left"> 센서 값 저장 모습
 
