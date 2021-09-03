@@ -255,3 +255,12 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
 ![파이어베이스](https://user-images.githubusercontent.com/88194064/131805681-67a60855-7dde-4f15-b286-280d71c00866.png) 센서 값 저장 모습
 
+### 안드로이드 스튜디오
+ 스마트팜의 상태를 실시간으로 모니터링 할 수 있는 어플 제작중..    
+
+ 와이파이 통신으로 데이터베이스에 저장한 센서값을 값을 읽어 어플에 표시
+
+<img src="사진\어플.jpg" align="left">
+
+ 
+
