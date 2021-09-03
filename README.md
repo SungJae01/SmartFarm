@@ -58,7 +58,7 @@
 ### 아두이노 Arduino
 
  스마트팜 내부의 데이터 값을 데이터베이스로 저장하려한다. 아두이노 우노의 센서값을 ESP8266-01을 사용하여 WiFi 통신하여 데이터베이스에 저장한다.
- 
+
  [아두이노 우노 코드](Arduino/Arduino.ino) 바로가기   
  [ESP8266-01 코드](ESP8266/ESP8266.ino) 바로가기
 
@@ -70,70 +70,8 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
 
 ### 안드로이드 스튜디오
- 스마트팜의 상태를 실시간으로 모니터링 할 수 있는 어플 제작
- <img src="사진\어플.png" align="left">
- 
-<<<<<<< HEAD
-  while(Serial.available()){
-    
-        //get sensor data from serial put in sensor_data
-        sensor_data=Serial.readString(); 
-        Sr=true;
-        
-    }
+ 스마트팜의 상태를 실시간으로 모니터링 할 수 있는 어플 제작중...
 
-  if(Sr==true){
-    
-    values=sensor_data;
-    
-    //get comma indexes from values variable
-    int fristCommaIndex = values.indexOf(',');
-    int secondCommaIndex = values.indexOf(',', fristCommaIndex+1);
-    int thirdCommaIndex = values.indexOf(',', secondCommaIndex+1);
-    
-    //get sensors data from values variable by  spliting by commas and put in to variables  
-    String temp_value = values.substring(0, fristCommaIndex);
-    String humi_value = values.substring(fristCommaIndex+1, secondCommaIndex);
-    String Light_value = values.substring(secondCommaIndex+1, thirdCommaIndex);
-    
-    
-    Firebase.getFloat("Log/Temperature");
-    Firebase.getFloat("Log/Humidity");
-    Firebase.getFloat("Log/Light");
-    
-    Firebase.setFloat("Log/number", n++);
-    
-    if(n == 101){
-      n = 0;
-    }
-    
-    Firebase.setString("Connect",str[i++]);
-    if(i == 4){
-      i = 0;
-    }
-    
-    delay(300);
-    
-    if (Firebase.failed()) {
-        return;
-    }
-  
-  }   
-}
-```
+![어플](https://user-images.githubusercontent.com/88194064/132038237-3c9280ab-3bf8-4c52-974f-b8e4689b0f63.jpg)
 
-hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://www.hackster.io/pulasthi-nanayakkara/send-multiple-sensors-data-to-firebase-using-esp8266-f2f38b)를 참고하였습니다.
-
-![파이어베이스](https://user-images.githubusercontent.com/88194064/131805681-67a60855-7dde-4f15-b286-280d71c00866.png) 센서 값 저장 모습
-
-### 안드로이드 스튜디오
- 스마트팜의 상태를 실시간으로 모니터링 할 수 있는 어플 제작중..    
-
- 와이파이 통신으로 데이터베이스에 저장한 센서값을 값을 읽어 어플에 표시
-
-<img src="사진\어플.jpg" align="left">
-
- 
-
-=======
->>>>>>> 009aca72e2a7a839c6b2d65bd03b0a72060ded13
+와이파이 통신으로 데이터베이스에 저장한 센서값을 값을 읽어 어플에 표시
