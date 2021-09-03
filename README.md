@@ -68,3 +68,8 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
 ««« **센서 값 저장 모습**
 
+
+### 안드로이드 스튜디오
+ 스마트팜의 상태를 실시간으로 모니터링 할 수 있는 어플 제작
+ <img src="사진\어플.png" align="left">
+ 
