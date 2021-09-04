@@ -77,3 +77,12 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 ![어플](https://user-images.githubusercontent.com/88194064/132038237-3c9280ab-3bf8-4c52-974f-b8e4689b0f63.jpg)
 
 와이파이 통신으로 데이터베이스에 저장한 센서값을 값을 읽어 어플에 표시
+
+
+
+### 3D 모델링
+
+![모델링](https://user-images.githubusercontent.com/88194064/132092342-5b88e9db-416a-4cc9-a409-921db8c32cd9.png)
+
+전체적인 모습
+
