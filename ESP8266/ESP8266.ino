@@ -1,17 +1,12 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
 
-#define FIREBASE_HOST "kimlab-21be3-default-rtdb.firebaseio.com"
-#define FIREBASE_AUTH "r5hljBYYrBhfysIZuiKEuQaulKtaDSYJumICdYgb"
+#define FIREBASE_HOST "FIREBASE_HOST"
+#define FIREBASE_AUTH "FIREBASE_AUTH"
 
-//#define FIREBASE_HOST "test1-69dfc-default-rtdb.firebaseio.com"
-//#define FIREBASE_AUTH "QOLdKEPtKAp8DcK1YBHIUo1FOobHD7EX223faEfB"
-////우리집
-//#define WIFI_SSID "U+Net3CA8"
-//#define WIFI_PASSWORD "30AB@PFB97"
-//Camp51.9
-#define WIFI_SSID "KT_GiGA_ABA8"
-#define WIFI_PASSWORD "7cb72ck295"
+//와이파이 이름, 비밀번호
+#define WIFI_SSID "WIFI_SSID"
+#define WIFI_PASSWORD "WIFI_PASSWORD"
 
 String values,sensor_data;
 int n = 0;
