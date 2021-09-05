@@ -57,6 +57,8 @@
 
 ### 아두이노 Arduino
 
+#### 코드
+
  스마트팜 내부의 데이터 값을 데이터베이스로 저장하려한다. 아두이노 우노의 센서값을 ESP8266-01을 사용하여 WiFi 통신하여 데이터베이스에 저장한다.
 
  [아두이노 우노 코드](Arduino/Arduino.ino) 바로가기   
@@ -66,11 +68,10 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
 
 
-<img src="사진\파이어베이스.png">
+#### 회로도
 
-««« **센서 값 저장 모습**    
-    
-    
+<img src="https://user-images.githubusercontent.com/88194064/132123562-54bd586a-bdab-43ac-8cf1-2b41392820c8.jpg" style="zoom:40%;" >
+
 ### 안드로이드 스튜디오
  스마트팜의 상태를 실시간으로 모니터링 할 수 있는 어플 제작중...
 
