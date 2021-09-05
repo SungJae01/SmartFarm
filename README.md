@@ -87,7 +87,29 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
 ### 3D 모델링
 
-![모델링](https://user-images.githubusercontent.com/88194064/132092342-5b88e9db-416a-4cc9-a409-921db8c32cd9.png)
+ 전체적인 모습
 
-전체적인 모습
+<img src="https://user-images.githubusercontent.com/88194064/132092342-5b88e9db-416a-4cc9-a409-921db8c32cd9.png" alt="모델링" style="zoom:25%; float:left" /><img src="https://user-images.githubusercontent.com/88194064/132126049-0c73742e-6f68-404f-b4aa-3925d16798ca.gif" alt="모델링 영상" style="zoom:29%; float:left;" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
