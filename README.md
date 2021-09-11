@@ -70,7 +70,7 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
 
 
-#### 회로도
+#### 기본 센서 및 엑츄에이터 회로도
 
 <img src="https://user-images.githubusercontent.com/88194064/132123562-54bd586a-bdab-43ac-8cf1-2b41392820c8.jpg" style="zoom:40%;" >
 
