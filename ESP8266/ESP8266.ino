@@ -86,10 +86,10 @@ void loop() {
     else if(temp_value_num < 27){
       Firebase.setString("Log/Moter", "모터 작동 중지");
     }
-    if(temp_value_num >= 40){
+    if(Moisture_value_num >= 40){
       Firebase.setString("Log/WaterPump", "워터 펌프 작동중...");
     }
-    else if(temp_value_num < 40){
+    else if(Moisture_value_num < 40){
       Firebase.setString("Log/WaterPump", "워터 펌프 작동 중지");
     }
     

@@ -1,3 +1,4 @@
+#include <SoftwareSerial.h>
 #include <Arduino.h>
 #include <U8g2lib.h>
 #include "DHT.h"
@@ -20,10 +21,14 @@
 #define EN3 7
 #define EN4 6
 
+#define BT_RXD 0
+#define BT_TXD 1
+
+SoftwareSerial ArduinoUno(BT_RXD, BT_TXD);
 DHT dht(DHTPIN, DHTTYPE);
 U8G2_SSD1306_128X64_NONAME_1_SW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);   // All Boards without Reset of the Display
 
-String values;
+String values, values_firebase;
 int L;
 //초음파 센서 trigPin, echoPin
 int trigPin = 11;    // Trigger
@@ -34,6 +39,7 @@ int Motor_speed_B=255;
 void setup(){
  //Initializes the serial connection at 9600 to sent sensor data to ESP8266.
   Serial.begin(9600); 
+  ArduinoUno.begin(115200);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
   // PWM 제어핀 출력 설정
@@ -56,13 +62,13 @@ void loop() {
 
       if(dht.readTemperature() >= 27)    //온도에 따른 팬 작동
       {
-        digitalWrite(EN3, LOW);   // 모터B 설정 
+        digitalWrite(EN3, LOW);   // 모터 설정 
         digitalWrite(EN4, HIGH);
         analogWrite(ENB, Motor_speed_B);
       }
       else if(dht.readTemperature() < 27)
       {
-        digitalWrite(EN3, LOW);   // 모터B 설정
+        digitalWrite(EN3, LOW);   // 모터 설정
         digitalWrite(EN4, LOW);
       }
       int Moister_value_num = get_Moisture_value().toInt();
@@ -83,7 +89,7 @@ void loop() {
       }
 
       // get sensors data and put in to values variables as a string.
-    values = (get_temp_value()+','+ get_humi_value() +','+ get_Light_value() +',' + get_Water_value() + ',' + get_Moisture_value() + ',');
+      values = (get_temp_value()+','+ get_humi_value() +','+ get_Light_value() +',' + get_Water_value() + ',' + get_Moisture_value() + ',');
        // removed any buffered previous serial data.
        Serial.flush();
        delay(500);
