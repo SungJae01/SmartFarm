@@ -80,15 +80,13 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
  **시프트 레지스터 (shift register)** :  [디지털 회로](https://ko.wikipedia.org/wiki/디지털_회로)에서 선형 방식으로 설치된 [프로세서 레지스터](https://ko.wikipedia.org/wiki/프로세서_레지스터)의 집합이며, 회로가 활성화 되었을 때 데이터를 줄 아래로 이동시키는 것과 같은 방법으로 입출력을 서로 연결하고 있다.
 
- 아두이노 우노의 핀 개수를 늘리고자 아두이노 핀 3개를 사용하여 디지털핀을 8개까지 늘릴 수 있는 74HC595 시프트 레지스터를 사용하기 위해 [Tinkercad](https://www.tinkercad.com/)를 사용하여 공부해 보았다.
-
- ![74HC595 레지스터](C:\Github\SmartFarm\사진\74HC595 레지스터.png)
+ 아두이노 우노의 핀 개수를 늘리고자 아두이노 핀 3개를 사용하여 디지털핀을 8개까지 늘릴 수 있는 74HC595 시프트 레지스터를 사용하기 위해 [Tinkercad](https://www.tinkercad.com/)를 사용하여 공부해 보았다.![74HC595 레지스터](https://user-images.githubusercontent.com/88194064/135709140-29308774-1847-4f1c-8253-161fcff635ac.png)
 
 사용법은 [이 영상](https://www.youtube.com/watch?v=LJrWb9RuHdE) 을 참고하였다. 
 
 ##### 아두이노 메가 호환보드 MEGA+WiFi R3, CH340G
 
- 아두이노의 핀 개수 문제를 해결하기 위해서 아날로그핀(12개), 디지털 핀(54개)이 많은 아두이노 메가 호환보드를 사용하기로 결정했다. 와이파이 모듈 보드에 장착되어있는 메가 보드를 사용할 것이다.
+ 아두이노의 핀 개수 문제를 해결하기 위해서 아날로그핀(12개), 디지털 핀(54개)이 많은 아두이노 메가 호환보드를 사용하기로 결정했다. 와이파이 모듈 보드에 장착되어있는 메가 보드를 사용할 것이다.<img src="https://user-images.githubusercontent.com/88194064/135709163-a8b912cc-e65e-4329-9927-cfc9c3199bed.jpg" style="zoom:50%;" >
 
    ㅇ H/W 센서 & 엑추에이터 핀
 
