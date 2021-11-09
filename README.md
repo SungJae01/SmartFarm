@@ -82,23 +82,25 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
  아두이노 우노의 핀 개수를 늘리고자 아두이노 핀 3개를 사용하여 디지털핀을 8개까지 늘릴 수 있는 74HC595 시프트 레지스터를 사용하기 위해 [Tinkercad](https://www.tinkercad.com/)를 사용하여 공부해 보았다.![74HC595 레지스터](https://user-images.githubusercontent.com/88194064/135709140-29308774-1847-4f1c-8253-161fcff635ac.png)
 
-사용법은 [이 영상](https://www.youtube.com/watch?v=LJrWb9RuHdE) 을 참고하였다. 
+사용법은 [이 영상](https://www.youtube.com/watch?v=LJrWb9RuHdE) 을 참고하였다. (0x0806)
 
-##### 아두이노 메가 호환보드 MEGA+WiFi R3, CH340G
+##### NodeMCU ESP8266
 
- 아두이노의 핀 개수 문제를 해결하기 위해서 아날로그핀(12개), 디지털 핀(54개)이 많은 아두이노 메가 호환보드를 사용하기로 결정했다. 와이파이 모듈 보드에 장착되어있는 메가 보드를 사용할 것이다.<img src="https://user-images.githubusercontent.com/88194064/135709163-a8b912cc-e65e-4329-9927-cfc9c3199bed.jpg" style="zoom:50%;" >
+ 아두이노의 핀 개수 문제와 와이파이 통신의 편리성을 위해 NodeMCU 보드 2개와 74HC595 시프트 레지스터 1개를 사용하기로 결정하였다.
 
-   ㅇ H/W 센서 & 엑추에이터 핀
+<img src="C:\Github\SmartFarm\사진\ESP8266-NodeMCU.png" alt="ESP8266-NodeMCU" style="float:left; zoom:50%;" />
 
-| 이름               | 개수 | Analog&Digital 핀 번호 |
-| ------------------ | ---- | ---------------------- |
-| DHT22 온습도  센서 | 1    | D1                     |
-| Moisture 센서      | 4    | A1, A2, A3, A4         |
-| 모터 드라이버      | 3    | D22 ~ D39              |
-| 릴레이             | 2    | D2, D3                 |
-| LED바              | 2    | D4, D5                 |
-| 초음파 센서        | 1    | A0, D12, D13           |
-|                    |      |                        |
+   ㅇ NodeMCU_1 H/W 센서 & 엑추에이터 핀
+
+| 이름                    | 개수 | Analog&Digital 핀 번호 |
+| ----------------------- | ---- | ---------------------- |
+| 74HC595 시프트 레지스터 | 1    |                        |
+| 릴레이                  | 2    |                        |
+| LED바                   | 2    |                        |
+| OLED                    | 1    |                        |
+|                         |      |                        |
+|                         |      |                        |
+|                         |      |                        |
 
 
 

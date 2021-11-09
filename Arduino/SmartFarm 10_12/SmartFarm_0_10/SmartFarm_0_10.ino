@@ -11,6 +11,9 @@
 #endif
 
 #include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+  #include <avr/power.h>
+#endif
 #include "DHT.h"
 
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
@@ -28,11 +31,13 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 #define WIFI_SSID "KT_GiGA_ABA8"
 #define WIFI_PASSWORD "7cb72ck295"
 
+#define BUTTON_PIN 2
+
 //LED 바
 #define PIN 2              // 디지털 입력 핀 설정
-#define NUMPIXELS 4        // Neopixel LED 소자 수 (LED가 24개라면 , 24로 작성)
-#define BRIGHTNESS 180     // 밝기 설정 0(어둡게) ~ 255(밝게) 까지 임의로 설정 가능
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+#define NUMPIXELS 15        // Neopixel LED 소자 수 (LED가 24개라면 , 24로 작성)
+#define BRIGHTNESS 255     // 밝기 설정 0(어둡게) ~ 255(밝게) 까지 임의로 설정 가능
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 //온습도 센서 DHT22
 #define DHTPIN 0 //D1
@@ -91,21 +96,18 @@ int Fan2_Speed_B=0;
 #define LED2 5
 
 DHT dht(DHTPIN, DHTTYPE);
-
-int timeSinceLastRead = 0;
-int StateData[3];     // 1층 식물 조도, 최고온도, 최저온도
-int ON_OFF;
-String select;
 //float now_temp=0 , temp;
 
 void setup() {
   Serial.begin(9600);
   dht.begin();
 
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+
   //LED바
-  strip.setBrightness(BRIGHTNESS);    //  BRIGHTNESS 만큼 밝기 설정 
-  strip.begin();                      //  Neopixel 제어를 시작
-  strip.show();                       //  Neopixel 동작 초기화 합니다
+  pixels.setBrightness(BRIGHTNESS);    //  BRIGHTNESS 만큼 밝기 설정 
+  pixels.begin();                      //  Neopixel 제어를 시작
+  pixels.show();                       //  Neopixel 동작 초기화 합니다
   
   //OLED
   u8g2.begin();
@@ -144,7 +146,16 @@ void setup() {
 
 //  pinMode(Relay, OUTPUT);
 //  pinMode(Switch,INPUT_PULLUP);
-
+  u8g2.setFontDirection(0);
+  u8g2.firstPage();
+  do {
+    u8g2.setFont(u8g2_font_streamline_all_t); 
+    u8g2.drawGlyph(29,43, 0x00df);
+    u8g2.setFont(u8g2_font_streamline_all_t); 
+    u8g2.drawGlyph(54,43, 0x00df);
+    u8g2.setFont(u8g2_font_streamline_all_t); 
+    u8g2.drawGlyph(79,43, 0x00df);
+  } while ( u8g2.nextPage() );
   // connect to wifi.
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
@@ -163,42 +174,30 @@ void setup() {
   Serial.println("Device Started");
   Serial.println("-------------------------------------");
 
-//  // initialize with the I2C addr 0x3C
-//  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
-//
-//  // Clear the buffer.
-//  display.clearDisplay();
+  u8g2.clearBuffer(); 
+  u8g2.setFontDirection(0);
+  u8g2.firstPage();
+  do {
+        
+  } while ( u8g2.nextPage() );
 }
-
+bool oldState = HIGH;
+int showType = 0;
 int k = 1;
+char input = 0;
 //float temp_value=0, temp;
 //temp=temp_value;
+
+int timeSinceLastRead = 0;
+int StateData[3];     // 1층 식물 조도, 최고온도, 최저온도
+int ON_OFF;
+String select;
+
 void loop() {
-  strip.setPixelColor(0, 255, 0, 0);
   
-    ON_OFF = Firebase.getFloat("Floor1/start");
-    Serial.println(ON_OFF);
+    OLED();
+    DataSetup();
 
-    if(ON_OFF == 1){   // 모니터링 작동 시작
-      select = Firebase.getString("Floor1/select");
-      if(select == "사용자 설정"){
-        //사용자 설정값
-      }
-      else{
-        //고정값
-        StateData[0] = Firebase.getFloat(select + "/Light");
-        StateData[1] = Firebase.getFloat(select + "/Temperature_HIGH");
-        StateData[2] = Firebase.getFloat(select + "/Temperature_LOW");
-      }
-    }else{     //작동 중지
-      select = "NULL";
-      StateData[0] = 0;
-      StateData[1] = 0;
-      StateData[2] = 0;
-    }
-
-    Serial.println(select);
-    
     for(int i = 0; i<3; i++){
       Serial.print(i);
       Serial.print(" : ");
@@ -219,52 +218,29 @@ void loop() {
 //    int Moisture4_value = analogRead(MOISTURE_4);
     
     Serial.print("온도 : ");
-    Serial.println(Firebase.getFloat("Floor1/Temperature"));
+    Serial.print(temp_value);
+    delay(100);
+    Serial.println("°C");
     Serial.print("습도 : ");
-    Serial.println(Firebase.getFloat("Floor1/Humidity"));
+    Serial.print(humi_value);
+    delay(100);
+    Serial.println("%");
     Serial.print("토양 습도 : ");
-    Serial.println(Firebase.getFloat("Floor1/Moisture1"));
+    Serial.print(get_Moisture_value());
+    delay(100);
+    Serial.println("%");
 //    Serial.print(Firebase.getFloat("Floor1/Moisture2"));
 //    Serial.print(Firebase.getFloat("Floor1/Moisture3"));
 //    Serial.println(Firebase.getFloat("Floor1/Moisture4"));
-    Serial.println("-------------------------------------");
-  
-    Firebase.setFloat("Floor1/Temperature",temp_value);
-    Firebase.setFloat("Floor1/Humidity",humi_value);
-    Firebase.setFloat("Floor1/Moisture1",Moisture1_value);
-//    Firebase.setFloat("Floor1/Moisture2",Moisture2_value);
-//    Firebase.setFloat("Floor1/Moisture3",Moisture3_value);
-//    Firebase.setFloat("Floor1/Moisture4",Moisture4_value);
-    
-    
-    String tempString = "";
-    String humiString = "";
-    tempString.concat(temp_value);
-    humiString.concat(humi_value);
+    Serial.println("-------------------------------------┐");
+
+    DataToFirebase(temp_value, humi_value, get_Moisture_value());
 
 //    Water_Pump(Moisture1_value,Moisture2_value,Moisture3_value,Moisture4_value);
 
-    if(ON_OFF == 2){
-      u8g2.clearBuffer();
-      u8g2.setFont(u8g2_font_unifont_t_korean1);  
-      u8g2.setFontDirection(0);
-      u8g2.firstPage();
-      do {
-        u8g2.setCursor(0, 40);
-        u8g2.print("식물 심는중...");    // Korean "Hello World"
-      } while ( u8g2.nextPage() );
-    }
-    else {
-      u8g2.clearBuffer();
-      u8g2.setFont(u8g2_font_unifont_t_korean1);  
-      u8g2.setFontDirection(0);
-      u8g2.firstPage();
-      do {
-        u8g2.setCursor(0, 40);
-        u8g2.print("KimLab");    // Korean "Hello World"
-      } while ( u8g2.nextPage() );
-    }
-  delay(1000);
+//  pixels.setPixelColor(NUMPIXELS, pixels.Color(255,0,0));
+//  pixels.show();
+  delay(100);
 }
 
 float get_Moisture_value(){
@@ -353,3 +329,139 @@ float get_Moisture_value(){
 //  
 //
 //}
+
+void OLED(){
+  u8g2.clearBuffer();
+  if(Firebase.getFloat("Floor1/start") == 2){
+      u8g2.clearBuffer();
+      delay(500);
+      u8g2.setFont(u8g2_font_unifont_t_korean1);  
+      u8g2.setFontDirection(0);
+      u8g2.firstPage();
+      do {
+        u8g2.setCursor(9, 37);
+        u8g2.print("식물 심는중");
+      } while ( u8g2.nextPage() );
+      delay(500);
+      u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_unifont_t_korean1);  
+      u8g2.setFontDirection(0);
+      u8g2.firstPage();
+      do {
+        u8g2.setCursor(9, 37);
+        u8g2.print("식물 심는중.");    // Korean "Hello World"
+      } while ( u8g2.nextPage() );
+      delay(500);
+      u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_unifont_t_korean1);  
+      u8g2.setFontDirection(0);
+      u8g2.firstPage();
+      do {
+        u8g2.setCursor(9, 37);
+        u8g2.print("식물 심는중..");    // Korean "Hello World"
+      } while ( u8g2.nextPage() );
+      delay(500);
+      u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_unifont_t_korean1);  
+      u8g2.setFontDirection(0);
+      u8g2.firstPage();
+      do {
+        u8g2.setCursor(9, 37);
+        u8g2.print("식물 심는중...");    // Korean "Hello World"
+      } while ( u8g2.nextPage() );
+    }
+    if(Firebase.getFloat("Floor1/start") == 1) {
+      u8g2.clearBuffer(); 
+      u8g2.firstPage();
+      do {
+        u8g2.setFontDirection(0);
+        u8g2.setFont(u8g2_font_streamline_all_t); 
+        u8g2.drawGlyph(54,46, 0x00db);
+        u8g2.drawGlyph(54,37, 0x00d7);
+        u8g2.setFont(u8g2_font_open_iconic_all_1x_t);
+        u8g2.drawGlyph(119, 9, 0x00f7);
+        
+        if(Firebase.getBool("Floor1/HeatingFan") == true){
+          u8g2.setFontDirection(0);
+          u8g2.setFont(u8g2_font_open_iconic_all_1x_t);
+          u8g2.drawGlyph(1, 9, 0x0103);
+        }
+        else{
+          u8g2.setFontDirection(0);
+          u8g2.setFont(u8g2_font_open_iconic_all_1x_t);
+          u8g2.drawGlyph(1, 9, 0x011f);
+        }
+        
+        if(Firebase.getBool("Floor1/CoolingFan") == true){
+          u8g2.setFontDirection(0);
+          u8g2.setFont(u8g2_font_open_iconic_all_1x_t);
+          u8g2.drawGlyph(10, 9, 0x0048);
+        }
+        else if(Firebase.getBool("Floor1/CoolingFan") == false){
+          u8g2.setFontDirection(0);
+          u8g2.setFont(u8g2_font_open_iconic_all_1x_t);
+          u8g2.drawGlyph(10, 9, 0x0053);
+        }
+
+        if(Firebase.getBool("Floor1/WaterPump") == true){
+          u8g2.setFontDirection(0);
+          u8g2.setFont(u8g2_font_open_iconic_all_1x_t);
+          u8g2.drawGlyph(19, 9, 0x0098);
+        }
+        else{
+          u8g2.setFontDirection(0);
+          u8g2.setFont(u8g2_font_open_iconic_all_1x_t);
+          u8g2.drawGlyph(19, 9, 0x011f);
+        }
+      } while ( u8g2.nextPage() );
+    }
+    if(Firebase.getFloat("Floor1/start") == 0) {
+      u8g2.setFontDirection(0);
+      u8g2.firstPage();
+      do {
+        u8g2.setFontDirection(0);
+        u8g2.setFont(u8g2_font_ncenB10_tr); 
+        u8g2.drawStr(33, 37, "KimLab");
+        u8g2.setFontDirection(0);
+        u8g2.setFont(u8g2_font_open_iconic_all_1x_t);
+        u8g2.drawGlyph(119, 9, 0x00f7);
+      } while ( u8g2.nextPage() );
+    }
+    delay(500);
+}
+
+void DataSetup(){
+    
+    ON_OFF = Firebase.getInt("Floor1/start");
+    Serial.println(ON_OFF);
+
+    if(ON_OFF == 1){   // 모니터링 작동 시작
+      select = Firebase.getString("Floor1/select");
+      Serial.println(select);
+      if(select == "사용자 설정"){
+        //사용자 설정값
+      }
+      else{
+        //고정값
+        StateData[0] = Firebase.getFloat(select + "/Light");
+        StateData[1] = Firebase.getFloat(select + "/Temperature_HIGH");
+        StateData[2] = Firebase.getFloat(select + "/Temperature_LOW");
+      }
+    }else{     //작동 중지
+      select = "NULL";
+      StateData[0] = 0;
+      StateData[1] = 0;
+      StateData[2] = 0;
+    }
+    Serial.read();
+    delay(1000);
+}
+
+void DataToFirebase(float temp_value, float humi_value, float Moisture_value ){
+      Firebase.setFloat("Floor1/Temperature",temp_value);
+      Firebase.setFloat("Floor1/Humidity",humi_value);
+      Firebase.setFloat("Floor1/Moisture1",Moisture_value);
+//    Firebase.setFloat("Floor1/Moisture2",Moisture2_value);
+//    Firebase.setFloat("Floor1/Moisture3",Moisture3_value);
+//    Firebase.setFloat("Floor1/Moisture4",Moisture4_value);
+}
