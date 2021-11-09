@@ -86,9 +86,19 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
 ##### NodeMCU ESP8266
 
- 아두이노의 핀 개수 문제와 와이파이 통신의 편리성을 위해 NodeMCU 보드 2개와 74HC595 시프트 레지스터 1개를 사용하기로 결정하였다.
+ 아두이노의 핀 개수 문제와 와이파이 통신의 편리성을 위해 NodeMCU 보드, 아두이노 메가 WiFi, 74HC595 시프트 레지스터 1개를 사용하기로 결정하였다.
 
-<img src="https://user-images.githubusercontent.com/88194064/140882432-44c77994-556e-4ec0-bc91-de61be04daee.png" alt="ESP8266-NodeMCU" style="float:left; zoom:50%;" />
+<img src="https://user-images.githubusercontent.com/88194064/140882432-44c77994-556e-4ec0-bc91-de61be04daee.png" alt="ESP8266-NodeMCU" style="float:left; zoom:30%;" /><img src="https://user-images.githubusercontent.com/88194064/140883093-362069fa-eb20-4047-8d75-d221aa73db3c.jpg" alt="아두이노 메가 WiFi" style="float:left; zoom:30%;" />
+
+
+
+
+
+
+
+
+
+
 
    ㅇ NodeMCU_1 H/W 센서 & 엑추에이터 핀
 
