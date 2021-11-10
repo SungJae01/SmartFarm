@@ -68,6 +68,10 @@
 
 hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://www.hackster.io/pulasthi-nanayakkara/send-multiple-sensors-data-to-firebase-using-esp8266-f2f38b)를 참고하였습니다.
 
+#### 순서도
+
+<img src="https://user-images.githubusercontent.com/88194064/141119251-a71b0a0a-3c14-4ad9-82cf-6ce8266838af.png" alt="순서도" style="float:left; zoom:100%;" />
+
 
 
 #### 기본 센서 및 엑츄에이터 회로도
@@ -82,7 +86,7 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
  아두이노 우노의 핀 개수를 늘리고자 아두이노 핀 3개를 사용하여 디지털핀을 8개까지 늘릴 수 있는 74HC595 시프트 레지스터를 사용하기 위해 [Tinkercad](https://www.tinkercad.com/)를 사용하여 공부해 보았다.![74HC595 레지스터](https://user-images.githubusercontent.com/88194064/135709140-29308774-1847-4f1c-8253-161fcff635ac.png)
 
-사용법은 [이 영상](https://www.youtube.com/watch?v=LJrWb9RuHdE) 을 참고하였다. (0x0806)
+사용법은 [이 영상](https://www.youtube.com/watch?v=LJrWb9RuHdE) 을 참고하였다. (0x0806
 
 ##### NodeMCU ESP8266
 
@@ -128,7 +132,7 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
  전체적인 모습
 
-<img src="https://user-images.githubusercontent.com/88194064/132092342-5b88e9db-416a-4cc9-a409-921db8c32cd9.png" alt="모델링" style="zoom:25%; float:left" /><img src="https://user-images.githubusercontent.com/88194064/132126049-0c73742e-6f68-404f-b4aa-3925d16798ca.gif" alt="모델링 영상" style="zoom:29%; float:left;" />
+<img src="https://user-images.githubusercontent.com/88194064/132092342-5b88e9db-416a-4cc9-a409-921db8c32cd9.png" alt="모델링" style="zoom:25%; float:left" />
 
 
 
