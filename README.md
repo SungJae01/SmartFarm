@@ -70,7 +70,7 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
 #### 순서도
 
-<img src="https://user-images.githubusercontent.com/88194064/141119251-a71b0a0a-3c14-4ad9-82cf-6ce8266838af.png" alt="순서도" style="float:left; zoom:100%;" />
+<img src="https://user-images.githubusercontent.com/88194064/141126657-28742cf9-a55d-471d-9847-498c61e4dfcf.png" alt="순서도" style="float:left; zoom:100%;" />
 
 
 
@@ -90,7 +90,7 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
 ##### NodeMCU ESP8266
 
- 아두이노의 핀 개수 문제와 와이파이 통신의 편리성을 위해 NodeMCU 보드, 아두이노 메가 WiFi, 74HC595 시프트 레지스터 1개를 사용하기로 결정하였다.
+ 아두이노의 핀 개수 문제와 와이파이 통신의 편리성을 위해 NodeMCU 보드, 아두이노 메가 WiFi, 74HC595 시프트 레지스터 1개를 사용하기로 결정하였다. 시프트 레지스터는 모터 드라이브 2개를 제어하는데 사용된다.
 
 <img src="https://user-images.githubusercontent.com/88194064/140882432-44c77994-556e-4ec0-bc91-de61be04daee.png" alt="ESP8266-NodeMCU" style="float:left; zoom:30%;" /><img src="https://user-images.githubusercontent.com/88194064/140883093-362069fa-eb20-4047-8d75-d221aa73db3c.jpg" alt="아두이노 메가 WiFi" style="float:left; zoom:30%;" />
 
