@@ -181,7 +181,7 @@ float get_temp_value(){
 
 void WaterPump(){
   if(Firebase.getFloat("Floor1/Moisture1") < 20){
-    shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b10000000);
+    shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b01000000);
     Firebase.setBool("Floor1/WaterPump",true);
     digitalWrite(LATCH_PIN, HIGH);
     delay(1);
