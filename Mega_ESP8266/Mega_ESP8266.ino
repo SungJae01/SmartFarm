@@ -49,19 +49,16 @@ delay(100);
     int fristCommaIndex = values.indexOf(',');
     int secondCommaIndex = values.indexOf(',', fristCommaIndex+1);
     int thirdCommaIndex = values.indexOf(',', secondCommaIndex + 1);
-    int forthCommaIndex = values.indexOf(',', thirdCommaIndex + 1);
     
     
     String Moisture1_value = values.substring(0, fristCommaIndex);
     String Moisture2_value = values.substring(fristCommaIndex+1, secondCommaIndex);
-    String Moisture3_value = values.substring(secondCommaIndex+1, thirdCommaIndex);
-    String Moisture4_value = values.substring(thirdCommaIndex+1, forthCommaIndex);
+    String Water_value = values.substring(secondCommaIndex+1, thirdCommaIndex);
   
      
     Firebase.setString("Floor1/Moisture1",Moisture1_value);
     Firebase.setString("Floor1/Moisture2",Moisture2_value);
-    Firebase.setString("Floor1/Moisture3",Moisture3_value);
-    Firebase.setString("Floor1/Moisture4",Moisture4_value);
+    Firebase.setString("Floor1/Water",Water_value);
     
     if (Firebase.failed()) {  
         return;

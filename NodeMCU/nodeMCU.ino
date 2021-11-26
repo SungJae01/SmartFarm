@@ -31,42 +31,36 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 #define WIFI_SSID "KT_GiGA_ABA8"
 #define WIFI_PASSWORD "7cb72ck295"
 
-#define BUTTON_PIN 2
-
 //LED 바
-#define PIN 2              // 디지털 입력 핀 설정
-#define NUMPIXELS 15        // Neopixel LED 소자 수 (LED가 24개라면 , 24로 작성)
-#define BRIGHTNESS 255     // 밝기 설정 0(어둡게) ~ 255(밝게) 까지 임의로 설정 가능
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+//#define PIN 2              // 디지털 입력 핀 설정
+//#define NUMPIXELS 15        // Neopixel LED 소자 수 (LED가 24개라면 , 24로 작성)
+//#define BRIGHTNESS 255     // 밝기 설정 0(어둡게) ~ 255(밝게) 까지 임의로 설정 가능
+//Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 //온습도 센서 DHT22
 #define DHTPIN 2 //D4
 #define DHTTYPE DHT22
 
 //릴레이 x ?
-#define Relay 0      //d6
+#define Relay 15      //d6
 
 //시프트레지스터 74HC595
 #define DATA_PIN 14   //D5
 #define LATCH_PIN 12  //D6
 #define CLOCK_PIN 13  //D7
 
-//LED 바 x 2
-#define LED1 1    //rx
-#define LED2 3    //tx
-
 DHT dht(DHTPIN, DHTTYPE);
 
-int timeSinceLastRead = 0;
 int StateData[3];     // 1층 식물 조도, 최고온도, 최저온도
 String select;
-//float now_temp=0 , temp;
+int ON_OFF;
+float temp_value;
+float humi_value;
+unsigned long time_previous, time_current;
 
 void setup() {
   Serial.begin(9600);
   dht.begin();
-
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
   
   pinMode(DATA_PIN, OUTPUT);
   pinMode(LATCH_PIN, OUTPUT);
@@ -86,9 +80,6 @@ void setup() {
   u8g2.enableUTF8Print();
   u8g2.clearBuffer();
 
-  pinMode(Relay, OUTPUT);
-//  pinMode(Switch,INPUT_PULLUP);
-
   // connect to wifi.
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
@@ -107,34 +98,30 @@ void setup() {
   Serial.println("Device Started");
   Serial.println("-------------------------------------");
 
-  // initialize with the I2C addr 0x3C
-  // display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
-
-  // Clear the buffer.
-  //display.clearDisplay();
+  time_previous_OLED = millis();       //현재 시간
+  time_previous_DataSetup = millis();
+  time_previous_DataToFirebase = millis();
+  time_previous_WaterPump = millis();
 }
-bool oldState = HIGH;
-int showType = 0;
-int k = 1;
-char input = 0;
-int ON_OFF;
-float temp_value;
-float humi_value;
 
 void loop() {
-    for(int i = 1; i < 255; i++){
-      analogWrite(15, i);
-      delay(5);
-    }
-    for(int j = 255; j > 0; j--){
-      analogWrite(15, j);
-      delay(5);
-    }
+    time_current_OLED = millis();
+    time_current_DataSetup = millis();      
+    time_current_DataToFirebase = millis();
+    time_current_WaterPump = millis();
   
     ON_OFF = Firebase.getInt("Floor1/start");
-    Serial.println(ON_OFF);
-    DataSetup(ON_OFF);
-    OLED(ON_OFF);
+//    Serial.println(ON_OFF);
+    if(time_current_OLED - time_previous_OLED >= 100){
+      time_previous_OLED = time_current_OLED;             // 시작 시간 갱신
+      OLED(ON_OFF);                                           // 0.1초 마다 OLED 화면 갱신
+    }
+
+    if(time_current_DataSetup - time_previous_DataSetup >= 100){
+      time_previous_DataSetup = time_current_DataSetup;             // 시작 시간 갱신
+      DataSetup(ON_OFF);                                            // 0.1초 마다 데이터 불러오기
+//      Serial.print("DataSetup!");
+    }
     
 //    for(int i = 0; i<3; i++){
 //      Serial.print(i);
@@ -143,16 +130,10 @@ void loop() {
 //      delay(100);
 //    }
 
-    temp_value = dht.readTemperature();
-    humi_value = dht.readHumidity();
-    
-    Serial.print("온도 : ");
-    Serial.print(temp_value);
-    Serial.println("°C");
-    Serial.print("습도 : ");
-    Serial.print(humi_value);
-    Serial.println("%");
-    Serial.println("-------------------------------------┐");
+    if(time_current_DataToFirebase - time_previous_DataToFirebase >= 1000){
+      time_previous_DataToFirebase = time_current_DataToFirebase;   // 시작 시간 갱신
+      DataToFirebase(temp_value, humi_value);                       // 1초 마다 데이터베이스에 값(온도, 습도) 저장
+    }
 
     if(humi_value > 40){
       digitalWrite(Relay, HIGH);
@@ -164,31 +145,60 @@ void loop() {
     }
     
 
-    DataToFirebase(temp_value, humi_value);
-
-//  Water_Pump(Moisture1_value,Moisture2_value,Moisture3_value,Moisture4_value);
-
 //  pixels.setPixelColor(NUMPIXELS, pixels.Color(255,0,0));
 //  pixels.show();
-  WaterPump();
-      delay(1000);
+    if(time_current_WaterPump - time_previous_WaterPump >= 8000){
+       time_previous_WaterPump = time_current_WaterPump;           // 시작 시간 갱신
+       WaterPump();                                                // 8초 마다 워터펌프 실행 조건 검사
+    }
 }
 
-float get_temp_value(){
-    float temp_value = dht.readTemperature();
-    return temp_value;  
+void DataToFirebase(float temp_value, float humi_value){
+      Serial.print("온도 : ");
+      Serial.print(temp_value);
+      Serial.println("°C");
+      Serial.print("습도 : ");
+      Serial.print(humi_value);
+      Serial.println("%");
+      Serial.println("-------------------------------------┐");
+      Firebase.setFloat("Floor1/Temperature",temp_value);
+      Firebase.setFloat("Floor1/Humidity",humi_value);
 }
 
 void WaterPump(){
   if(Firebase.getFloat("Floor1/Moisture1") < 20){
     shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b01000000);
-    Firebase.setBool("Floor1/WaterPump",true);
+    Firebase.setBool("Floor1/WaterPump1",true);
+    digitalWrite(LATCH_PIN, HIGH);
+    delay(3000);
+    digitalWrite(LATCH_PIN, LOW);
+    shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b00000000);
+    Firebase.setBool("Floor1/WaterPump1",false);
     digitalWrite(LATCH_PIN, HIGH);
     delay(1);
     digitalWrite(LATCH_PIN, LOW);
   } else{
     shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b00000000);
-    Firebase.setBool("Floor1/WaterPump",false);
+    Firebase.setBool("Floor1/WaterPump1",false);
+    digitalWrite(LATCH_PIN, HIGH);
+    delay(1);
+    digitalWrite(LATCH_PIN, LOW);
+  }
+  delay(4000);
+   if(Firebase.getFloat("Floor1/Moisture2") < 20){
+    shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b00010000);
+    Firebase.setBool("Floor1/WaterPump2",true);
+    digitalWrite(LATCH_PIN, HIGH);
+    delay(3000);
+    digitalWrite(LATCH_PIN, LOW);
+    shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b00000000);
+    Firebase.setBool("Floor1/WaterPump2",false);
+    digitalWrite(LATCH_PIN, HIGH);
+    delay(1);
+    digitalWrite(LATCH_PIN, LOW);
+  } else{
+    shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b00000000);
+    Firebase.setBool("Floor1/WaterPump2",false);
     digitalWrite(LATCH_PIN, HIGH);
     delay(1);
     digitalWrite(LATCH_PIN, LOW);
@@ -336,22 +346,4 @@ void DataSetup(int ON_OFF){
       StateData[2] = 0;
     }
     delay(100);
-}
-
-void DataToFirebase(float temp_value, float humi_value){
-      Firebase.setFloat("Floor1/Temperature",temp_value);
-      if (Firebase.failed()) {
-        Serial.print("Temperature failed:");
-        Firebase.setString("Temperature","Error");
-        Serial.println(Firebase.error());  
-      }
-      delay(100);
-      Firebase.setFloat("Floor1/Humidity",humi_value);
-      if (Firebase.failed()) {
-        Serial.print("Humidity failed:");
-        Firebase.setString("Humidity","Error");
-        Serial.println(Firebase.error());
-        
-      }
-      delay(100);
 }

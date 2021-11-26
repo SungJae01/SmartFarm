@@ -1,8 +1,7 @@
 //토양 습도 센서 x4
 #define MOISTURE_1 A0
 #define MOISTURE_2 A1
-#define MOISTURE_3 A2
-#define MOISTURE_4 A3
+
 
 int trigger_pin = 2;
 int echo_pin = 3;
@@ -25,8 +24,9 @@ String values;
  
 void loop() {
   analogWrite(3, 225);
+  analogWrite(5, 225);
   // get sensors data and put in to values variables as a string.
-   values = (get_Moisture1_value()+','+get_Moisture2_value()+','+get_Moisture3_value()+','+get_Moisture4_value()+',');
+   values = (get_Moisture1_value()+','+get_Moisture2_value()+','+get_water_Value()+',');
        delay(1000);
        // removed any buffered previous serial data.
        Serial.flush();
@@ -36,11 +36,7 @@ void loop() {
 //       Serial.print(get_Moisture1_value());
 //       Serial.print("/");
 //       Serial.print(get_Moisture2_value());
-//       Serial.print("/");
-//       Serial.print(get_Moisture3_value());
-//       Serial.print("/");
-//       Serial.println(get_Moisture4_value());
-//       delay(1000);
+
 }
 
 String get_Moisture1_value(){ 
@@ -63,9 +59,9 @@ String get_Moisture2_value(){
     return String(res);  
 }
 
-String get_Moisture3_value(){ 
+String get_Moisture2_value(){ 
     float res;
-    float M = analogRead(MOISTURE_3);   //토양 습도를 측정합니다.
+    float M = analogRead();   //토양 습도를 측정합니다.
 
     int i = 1023;
     int j = 100;
@@ -73,13 +69,17 @@ String get_Moisture3_value(){
     return String(res);  
 }
 
-String get_Moisture4_value(){ 
-    float res;
-    float M = analogRead(MOISTURE_4);   //토양 습도를 측정합니다.
+String get_water_Value(){  
+ 
+    digitalWrite (trigger_pin, HIGH);
+    delayMicroseconds (10);
+    digitalWrite (trigger_pin, LOW);
 
-    int i = 1023;
-    int j = 100;
-    res = M*j/i;                //%로 변환
-    return String(res);  
+    float M = pulseIn (echo_pin, HIGH);
+    float res;
+
+    res = M*j/i;
+    
+    return String(res);   
 }
  

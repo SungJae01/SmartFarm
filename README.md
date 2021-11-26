@@ -90,11 +90,9 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
 ##### NodeMCU ESP8266
 
- 아두이노의 핀 개수 문제와 와이파이 통신의 편리성을 위해 NodeMCU 보드, 아두이노 메가 WiFi, 74HC595 시프트 레지스터 1개를 사용하기로 결정하였다. 시프트 레지스터는 모터 드라이브 2개를 제어하는데 사용된다.
+ 아두이노의 핀 개수 문제와 와이파이 통신의 편리성을 위해 NodeMCU, 아두이노 우노 & ESP8266, 74HC595 시프트 레지스터 1개를 사용하기로 결정하였다. 시프트 레지스터는 모터 드라이브 1개를 제어하는데 사용된다.
 
-<img src="https://user-images.githubusercontent.com/88194064/140882432-44c77994-556e-4ec0-bc91-de61be04daee.png" alt="ESP8266-NodeMCU" style="float:left; zoom:30%;" /><img src="https://user-images.githubusercontent.com/88194064/140883093-362069fa-eb20-4047-8d75-d221aa73db3c.jpg" alt="아두이노 메가 WiFi" style="float:left; zoom:30%;" />
-
-
+<img src="https://user-images.githubusercontent.com/88194064/140882432-44c77994-556e-4ec0-bc91-de61be04daee.png" alt="ESP8266-NodeMCU" style="float:left; zoom:50%;" /><img src="https://user-images.githubusercontent.com/88194064/143594188-0823584f-e8b9-4d7e-950c-54e38ca01acc.png" alt="ESP8266" style="float:left; zoom:50%;" /><img src="https://user-images.githubusercontent.com/88194064/143594204-e5ad95f3-fcb8-4423-8a69-dbf673d48bad.png" alt="ESP8266-NodeMCU" style="float:left; zoom:70%;" />
 
 
 
@@ -104,17 +102,30 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 
 
 
-   ㅇ NodeMCU_1 H/W 센서 & 엑추에이터 핀
 
-| 이름                    | 개수 | Analog&Digital 핀 번호 |
-| ----------------------- | ---- | ---------------------- |
-| 74HC595 시프트 레지스터 | 1    |                        |
-| 릴레이                  | 2    |                        |
-| LED바                   | 2    |                        |
-| OLED                    | 1    |                        |
-|                         |      |                        |
-|                         |      |                        |
-|                         |      |                        |
+
+
+
+
+
+
+
+   ㅇ NodeMCU H/W 센서 & 엑추에이터 핀
+
+| 이름                    | 개수 | Analog&Digital 핀 번호                          |
+| ----------------------- | ---- | ----------------------------------------------- |
+| 74HC595 시프트 레지스터 | 1    | DATA_PIN : D5 , LATCH_PIN : D6 , CLOCK_PIN : D7 |
+| 릴레이                  | 1    | D6                                              |
+| LED바                   | 1    |                                                 |
+| OLED                    | 1    | D1, D2                                          |
+
+   ㅇ 아두이노 우노 H/W 센서 & 엑추에이터 핀
+
+| 이름           | 개수 | Analog&Digital 핀 번호 |
+| -------------- | ---- | ---------------------- |
+| 토양 수분 센서 | 2    | A0, A1                 |
+| 초음파 센서    | 1    | D7, D8                 |
+| ESP8266        | 1    | RX, TX                 |
 
 
 
