@@ -42,7 +42,7 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 #define DHTTYPE DHT22
 
 //릴레이 x ?
-#define Relay 15      //d6
+#define Relay 15      //D6
 
 //시프트레지스터 74HC595
 #define DATA_PIN 14   //D5
@@ -52,25 +52,28 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 DHT dht(DHTPIN, DHTTYPE);
 
 int StateData[3];     // 1층 식물 조도, 최고온도, 최저온도
-String select;
-int ON_OFF;
-float temp_value;
-float humi_value;
-unsigned long time_previous, time_current;
+String select;        // 어플로부터 받은 식물 종류
+int ON_OFF;           // 스마트팜 동작 여부
+float temp_value;     // 온도
+float humi_value;     // 습도
+unsigned long time_previous_OLED, time_previous_DataSetup, time_previous_DataToFirebase, time_previous_WaterPump,
+              time_current_OLED, time_current_DataSetup, time_previous_DataToFirebase, time_previous_WaterPump;
 
 void setup() {
   Serial.begin(9600);
   dht.begin();
-  
+
+  //시프트레지스터 74HC595 핀모드
   pinMode(DATA_PIN, OUTPUT);
   pinMode(LATCH_PIN, OUTPUT);
   pinMode(CLOCK_PIN, OUTPUT);
   
+  //시프트레지스터 74HC595 LOW Setup
   digitalWrite(DATA_PIN,LOW);
   digitalWrite(LATCH_PIN,LOW);
   digitalWrite(CLOCK_PIN,LOW);
 
-  //LED바
+  //Neopixel LED바
   pixels.setBrightness(BRIGHTNESS);    //  BRIGHTNESS 만큼 밝기 설정 
   pixels.begin();                      //  Neopixel 제어를 시작
   pixels.show();                       //  Neopixel 동작 초기화 합니다
@@ -105,22 +108,23 @@ void setup() {
 }
 
 void loop() {
+  
     time_current_OLED = millis();
-    time_current_DataSetup = millis();      
+    time_current_DataSetup = millis();
     time_current_DataToFirebase = millis();
     time_current_WaterPump = millis();
   
     ON_OFF = Firebase.getInt("Floor1/start");
 //    Serial.println(ON_OFF);
+
     if(time_current_OLED - time_previous_OLED >= 100){
-      time_previous_OLED = time_current_OLED;             // 시작 시간 갱신
-      OLED(ON_OFF);                                           // 0.1초 마다 OLED 화면 갱신
+      time_previous_OLED = time_current_OLED;                       // 시작 시간 갱신
+      OLED(ON_OFF);                                                 // 0.1초 마다 OLED 화면 갱신
     }
 
     if(time_current_DataSetup - time_previous_DataSetup >= 100){
       time_previous_DataSetup = time_current_DataSetup;             // 시작 시간 갱신
       DataSetup(ON_OFF);                                            // 0.1초 마다 데이터 불러오기
-//      Serial.print("DataSetup!");
     }
     
 //    for(int i = 0; i<3; i++){
@@ -144,15 +148,13 @@ void loop() {
       Firebase.setBool("Floor1/Steam",true);
     }
     
-
-//  pixels.setPixelColor(NUMPIXELS, pixels.Color(255,0,0));
-//  pixels.show();
     if(time_current_WaterPump - time_previous_WaterPump >= 8000){
-       time_previous_WaterPump = time_current_WaterPump;           // 시작 시간 갱신
-       WaterPump();                                                // 8초 마다 워터펌프 실행 조건 검사
+       time_previous_WaterPump = time_current_WaterPump;            // 시작 시간 갱신
+       WaterPump();                                                 // 8초 마다 워터펌프 실행 조건 검사
     }
 }
 
+//실시간 온습도 값 데이터베이스 저장
 void DataToFirebase(float temp_value, float humi_value){
       Serial.print("온도 : ");
       Serial.print(temp_value);
@@ -165,9 +167,12 @@ void DataToFirebase(float temp_value, float humi_value){
       Firebase.setFloat("Floor1/Humidity",humi_value);
 }
 
+//워터 펌프
 void WaterPump(){
-  if(Firebase.getFloat("Floor1/Moisture1") < 20){
-    shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b01000000);
+
+  //워터 펌프 1
+  if(Firebase.getFloat("Floor1/Moisture1") < 20){                   //데이터베이스에서 현재 토양 수분 센서 값을 읽어 비교
+    shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b01000000);            //시프트레지스터 74HC595 출력에 반영 (1번,2번 출력 : 모터드라이버 EN1, EN2)
     Firebase.setBool("Floor1/WaterPump1",true);
     digitalWrite(LATCH_PIN, HIGH);
     delay(3000);
@@ -185,8 +190,10 @@ void WaterPump(){
     digitalWrite(LATCH_PIN, LOW);
   }
   delay(4000);
-   if(Firebase.getFloat("Floor1/Moisture2") < 20){
-    shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b00010000);
+
+  //워터 펌프 2
+  if(Firebase.getFloat("Floor1/Moisture2") < 20){                   //데이터베이스에서 현재 토양 수분 센서 값을 읽어 비교
+    shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b00010000);            //시프트레지스터 74HC595 출력에 반영 (3번,4번 출력 : 모터드라이버 EN3, EN4)
     Firebase.setBool("Floor1/WaterPump2",true);
     digitalWrite(LATCH_PIN, HIGH);
     delay(3000);
@@ -203,23 +210,9 @@ void WaterPump(){
     delay(1);
     digitalWrite(LATCH_PIN, LOW);
   }
-  
 }
 
-//void Moter(float temp_value){
-//  if(StateData[1]>=temp_value)&&(StateData[2]<=temp_value){
-//    //모터 작동 중지
-//  }else{
-//    if(StateData[1]<temp_value){
-//      //펜 작동
-//    }
-//    else if(StateData[2]>temp_value){
-//      //히터 작동
-//    }
-//  }
-//}
-
-void OLED(int ON_OFF){
+void OLED(int ON_OFF){                                              //상황별 OLED 화면 출력
   u8g2.clearBuffer();
   if(ON_OFF == 2){
     while(1){
@@ -239,7 +232,7 @@ void OLED(int ON_OFF){
       u8g2.firstPage();
       do {
         u8g2.setCursor(9, 37);
-        u8g2.print("식물 심는중.");    // Korean "Hello World"
+        u8g2.print("식물 심는중.");
       } while ( u8g2.nextPage() );
       delay(300);
       u8g2.clearBuffer();
@@ -248,7 +241,7 @@ void OLED(int ON_OFF){
       u8g2.firstPage();
       do {
         u8g2.setCursor(9, 37);
-        u8g2.print("식물 심는중..");    // Korean "Hello World"
+        u8g2.print("식물 심는중..");
       } while ( u8g2.nextPage() );
       delay(300);
       u8g2.clearBuffer();
@@ -257,7 +250,7 @@ void OLED(int ON_OFF){
       u8g2.firstPage();
       do {
         u8g2.setCursor(9, 37);
-        u8g2.print("식물 심는중...");    // Korean "Hello World"
+        u8g2.print("식물 심는중...");
       } while ( u8g2.nextPage() );
       if(Firebase.getInt("Floor1/start") != 2){
         return;
@@ -332,9 +325,12 @@ void DataSetup(int ON_OFF){
       select = Firebase.getString("Floor1/select");
       if(select == "사용자 설정"){
         //사용자 설정값
+        StateData[0] = Firebase.getFloat("User/Light");
+        StateData[1] = Firebase.getFloat("User/Temperature_HIGH");
+        StateData[2] = Firebase.getFloat("User/Temperature_LOW");
       }
       else{
-        //고정값
+        //데이터 베이스 제공 값
         StateData[0] = Firebase.getFloat(select + "/Light");
         StateData[1] = Firebase.getFloat(select + "/Temperature_HIGH");
         StateData[2] = Firebase.getFloat(select + "/Temperature_LOW");
