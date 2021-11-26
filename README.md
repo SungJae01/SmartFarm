@@ -126,6 +126,10 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
 | 초음파 센서    | 1    | D7, D8                 |
 | ESP8266        | 1    | RX, TX                 |
 
+#### 최종 회로도
+
+![회로도2](https://user-images.githubusercontent.com/88194064/143608698-d4c527c8-9b00-48b7-9de7-ecccf129e549.png)
+
 
 
 ### 안드로이드 스튜디오

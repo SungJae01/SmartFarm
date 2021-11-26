@@ -13,18 +13,16 @@ String values;
  void setup() { 
   
  pinMode (trigger_pin, OUTPUT); 
- 
  pinMode (echo_pin, INPUT);
  
- //Initializes the serial connection at 9600 to sent sensor data to ESP8266.
  Serial.begin(9600); 
  delay(2000);  
   
  }
  
 void loop() {
-  analogWrite(3, 225);
-  analogWrite(5, 225);
+  analogWrite(3, 225);            //모터 드라이버 ENA
+  analogWrite(5, 225);            //모터 드라이버 ENB
   // get sensors data and put in to values variables as a string.
    values = (get_Moisture1_value()+','+get_Moisture2_value()+','+get_water_Value()+',');
        delay(1000);
