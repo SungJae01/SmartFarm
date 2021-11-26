@@ -18,16 +18,15 @@
 
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
-// Set these to run example.
-//#define FIREBASE_HOST "kimlab-21be3-default-rtdb.firebaseio.com"
-//#define FIREBASE_AUTH "r5hljBYYrBhfysIZuiKEuQaulKtaDSYJumICdYgb"
-
+// 파이어베이스 Realtime database FIREBASE_HOST & FIREBASE_AUTH
 #define FIREBASE_HOST "test1-69dfc-default-rtdb.firebaseio.com"
 #define FIREBASE_AUTH "QOLdKEPtKAp8DcK1YBHIUo1FOobHD7EX223faEfB"
-//우리집
+
+//우리집 WiFi SSID & PASSWORD
 //#define WIFI_SSID "U+Net3CA8"
 //#define WIFI_PASSWORD "30AB@PFB97"
-//Camp51.9
+
+//Camp51.9 WiFi SSID & PASSWORD
 #define WIFI_SSID "KT_GiGA_ABA8"
 #define WIFI_PASSWORD "7cb72ck295"
 
@@ -41,7 +40,7 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 #define DHTPIN 2 //D4
 #define DHTTYPE DHT22
 
-//릴레이 x ?
+//릴레이
 #define Relay 15      //D6
 
 //시프트레지스터 74HC595
@@ -74,9 +73,9 @@ void setup() {
   digitalWrite(CLOCK_PIN,LOW);
 
   //Neopixel LED바
-  pixels.setBrightness(BRIGHTNESS);    //  BRIGHTNESS 만큼 밝기 설정 
-  pixels.begin();                      //  Neopixel 제어를 시작
-  pixels.show();                       //  Neopixel 동작 초기화 합니다
+//  pixels.setBrightness(BRIGHTNESS);    //  BRIGHTNESS 만큼 밝기 설정 
+//  pixels.begin();                      //  Neopixel 제어를 시작
+//  pixels.show();                       //  Neopixel 동작 초기화 합니다
   
   //OLED
   u8g2.begin();
