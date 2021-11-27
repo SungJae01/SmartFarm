@@ -16,6 +16,12 @@
 #endif
 #include "DHT.h"
 
+#ifdef ESP8266
+extern "C" {
+#include "user_interface.h"
+}
+#endif
+
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 // 파이어베이스 Realtime database FIREBASE_HOST & FIREBASE_AUTH
@@ -56,11 +62,12 @@ int ON_OFF;           // 스마트팜 동작 여부
 float temp_value;     // 온도
 float humi_value;     // 습도
 unsigned long time_previous_OLED, time_previous_DataSetup, time_previous_DataToFirebase, time_previous_WaterPump,
-              time_current_OLED, time_current_DataSetup, time_previous_DataToFirebase, time_previous_WaterPump;
+              time_current_OLED, time_current_DataSetup, time_current_DataToFirebase, time_current_WaterPump;
 
 void setup() {
   Serial.begin(9600);
   dht.begin();
+  wifi_set_sleep_type(NONE_SLEEP_T);
 
   //시프트레지스터 74HC595 핀모드
   pinMode(DATA_PIN, OUTPUT);
@@ -211,6 +218,22 @@ void WaterPump(){
   }
 }
 
+void DataSetup(int ON_OFF){
+
+    if(ON_OFF == 1){   // 모니터링 작동 시작
+      select = Firebase.getString("Floor1/select");
+      StateData[0] = Firebase.getFloat("User1/Light");                //어플에서 설정한 값 StateData 할당
+      StateData[1] = Firebase.getFloat("User1/Temperature_HIGH");
+      StateData[2] = Firebase.getFloat("User1/Temperature_LOW");
+    }else{     //작동 중지
+      select = "NULL";
+      StateData[0] = 0;
+      StateData[1] = 0;
+      StateData[2] = 0;
+    }
+    delay(100);
+}
+
 void OLED(int ON_OFF){                                              //상황별 OLED 화면 출력
   u8g2.clearBuffer();
   if(ON_OFF == 2){
@@ -314,31 +337,6 @@ void OLED(int ON_OFF){                                              //상황별 
         u8g2.setFont(u8g2_font_open_iconic_all_1x_t);
         u8g2.drawGlyph(119, 9, 0x00f7);
       } while ( u8g2.nextPage() );
-    }
-    delay(100);
-}
-
-void DataSetup(int ON_OFF){
-
-    if(ON_OFF == 1){   // 모니터링 작동 시작
-      select = Firebase.getString("Floor1/select");
-      if(select == "사용자 설정"){
-        //사용자 설정값
-        StateData[0] = Firebase.getFloat("User/Light");
-        StateData[1] = Firebase.getFloat("User/Temperature_HIGH");
-        StateData[2] = Firebase.getFloat("User/Temperature_LOW");
-      }
-      else{
-        //데이터 베이스 제공 값
-        StateData[0] = Firebase.getFloat(select + "/Light");
-        StateData[1] = Firebase.getFloat(select + "/Temperature_HIGH");
-        StateData[2] = Firebase.getFloat(select + "/Temperature_LOW");
-      }
-    }else{     //작동 중지
-      select = "NULL";
-      StateData[0] = 0;
-      StateData[1] = 0;
-      StateData[2] = 0;
     }
     delay(100);
 }
