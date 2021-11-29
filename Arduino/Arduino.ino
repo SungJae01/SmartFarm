@@ -3,8 +3,8 @@
 #define MOISTURE_2 A1
 
 
-int trigger_pin = 2;
-int echo_pin = 3;
+int trigger_pin = 7;
+int echo_pin = 6;
 
 int time;
 int distance; 
@@ -26,7 +26,7 @@ void loop() {
   analogWrite(3, 225);
   analogWrite(5, 225);
   // get sensors data and put in to values variables as a string.
-   values = (get_Moisture1_value()+','+get_Moisture2_value()+','+get_water_Value()+',');
+   values = (/*get_Moisture1_value()+','+get_Moisture2_value()+','+*/get_water_Value()+',');
        delay(1000);
        // removed any buffered previous serial data.
        Serial.flush();
@@ -59,27 +59,16 @@ String get_Moisture2_value(){
     return String(res);  
 }
 
-String get_Moisture2_value(){ 
-    float res;
-    float M = analogRead();   //토양 습도를 측정합니다.
-
-    int i = 1023;
-    int j = 100;
-    res = M*j/i;                //%로 변환
-    return String(res);  
-}
-
 String get_water_Value(){  
  
     digitalWrite (trigger_pin, HIGH);
     delayMicroseconds (10);
     digitalWrite (trigger_pin, LOW);
 
-    float M = pulseIn (echo_pin, HIGH);
+    float duration = pulseIn (echo_pin, HIGH);
     float res;
-
-    res = M*j/i;
     
-    return String(res);   
+    long distance = duration * 17 / 1000;
+    return String(distance);   
 }
  

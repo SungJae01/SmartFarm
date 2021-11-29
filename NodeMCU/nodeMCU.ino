@@ -142,9 +142,11 @@ void loop() {
 
     if(time_current_DataToFirebase - time_previous_DataToFirebase >= 1000){
       time_previous_DataToFirebase = time_current_DataToFirebase;   // 시작 시간 갱신
+      temp_value = dht.readTemperature();
+      humi_value = dht.readHumidity();
       DataToFirebase(temp_value, humi_value);                       // 1초 마다 데이터베이스에 값(온도, 습도) 저장
     }
-
+    humi_value = dht.readHumidity();
     if(humi_value > 40){
       digitalWrite(Relay, HIGH);
       Firebase.setBool("Floor1/Steam",false);
@@ -153,10 +155,12 @@ void loop() {
       digitalWrite(Relay, LOW);
       Firebase.setBool("Floor1/Steam",true);
     }
+
     
     if(time_current_WaterPump - time_previous_WaterPump >= 8000){
        time_previous_WaterPump = time_current_WaterPump;            // 시작 시간 갱신
        WaterPump();                                                 // 8초 마다 워터펌프 실행 조건 검사
+       Serial.println("워터펌프 실행 조건 검사");
     }
 }
 
@@ -177,11 +181,11 @@ void DataToFirebase(float temp_value, float humi_value){
 void WaterPump(){
 
   //워터 펌프 1
-  if(Firebase.getFloat("Floor1/Moisture1") < 20){                   //데이터베이스에서 현재 토양 수분 센서 값을 읽어 비교
+  if(Firebase.getFloat("Floor1/Moisture1") < 50){                   //데이터베이스에서 현재 토양 수분 센서 값을 읽어 비교
     shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b01000000);            //시프트레지스터 74HC595 출력에 반영 (1번,2번 출력 : 모터드라이버 EN1, EN2)
     Firebase.setBool("Floor1/WaterPump1",true);
     digitalWrite(LATCH_PIN, HIGH);
-    delay(3000);
+//    delay(3000);
     digitalWrite(LATCH_PIN, LOW);
     shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b00000000);
     Firebase.setBool("Floor1/WaterPump1",false);
@@ -195,19 +199,18 @@ void WaterPump(){
     delay(1);
     digitalWrite(LATCH_PIN, LOW);
   }
-  delay(4000);
 
   //워터 펌프 2
-  if(Firebase.getFloat("Floor1/Moisture2") < 20){                   //데이터베이스에서 현재 토양 수분 센서 값을 읽어 비교
+  if(Firebase.getFloat("Floor1/Moisture2") < 50){                   //데이터베이스에서 현재 토양 수분 센서 값을 읽어 비교
     shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b00010000);            //시프트레지스터 74HC595 출력에 반영 (3번,4번 출력 : 모터드라이버 EN3, EN4)
     Firebase.setBool("Floor1/WaterPump2",true);
     digitalWrite(LATCH_PIN, HIGH);
-    delay(3000);
+//    delay(3000);
     digitalWrite(LATCH_PIN, LOW);
     shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b00000000);
     Firebase.setBool("Floor1/WaterPump2",false);
     digitalWrite(LATCH_PIN, HIGH);
-    delay(1);
+//    delay(1);
     digitalWrite(LATCH_PIN, LOW);
   } else{
     shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, 0b00000000);
@@ -231,7 +234,7 @@ void DataSetup(int ON_OFF){
       StateData[1] = 0;
       StateData[2] = 0;
     }
-    delay(100);
+//    delay(100);
 }
 
 void OLED(int ON_OFF){                                              //상황별 OLED 화면 출력
@@ -256,7 +259,7 @@ void OLED(int ON_OFF){                                              //상황별 
         u8g2.setCursor(9, 37);
         u8g2.print("식물 심는중.");
       } while ( u8g2.nextPage() );
-      delay(300);
+//      delay(300);
       u8g2.clearBuffer();
       u8g2.setFont(u8g2_font_unifont_t_korean1);  
       u8g2.setFontDirection(0);
@@ -265,7 +268,7 @@ void OLED(int ON_OFF){                                              //상황별 
         u8g2.setCursor(9, 37);
         u8g2.print("식물 심는중..");
       } while ( u8g2.nextPage() );
-      delay(300);
+//      delay(300);
       u8g2.clearBuffer();
       u8g2.setFont(u8g2_font_unifont_t_korean1);  
       u8g2.setFontDirection(0);
@@ -338,5 +341,5 @@ void OLED(int ON_OFF){                                              //상황별 
         u8g2.drawGlyph(119, 9, 0x00f7);
       } while ( u8g2.nextPage() );
     }
-    delay(100);
+//    delay(100);
 }
