@@ -164,3 +164,8 @@ hackster.io의 [[Send multiple sensors data to Firebase using ESP8266]](https://
  3. 아두이노 인터럽트기능을 잘 활용하지 못하였다
  4. 프로젝트 마간기한을 잘 맞추지 못했고 여러 기능들은 구현했지만 너무 허술하였다.
 
+### 2024년 다른 주제로 프로젝트 재시도 후 성공
+
+**[2024.05.10 ~ 2024.06.11]**
+
+https://github.com/SungJae01/IoT_FinalProject.git
